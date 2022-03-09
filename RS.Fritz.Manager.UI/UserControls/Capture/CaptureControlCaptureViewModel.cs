@@ -24,15 +24,7 @@
 
         public IAsyncRelayCommand Stop_1_Command { get; }
 
-        public string ProvisioningCode
-        {
-            get => provisioningCode;
-            set
-            {
-                if (SetProperty(ref provisioningCode, value))
-                    DefaultCommand.NotifyCanExecuteChanged();
-            }
-        }
+        
 
         protected override async Task DoExecuteDefaultCommandAsync()
         {
@@ -43,6 +35,7 @@
         protected override void FritzServiceViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             base.FritzServiceViewModelPropertyChanged(sender, e);
+            /*
             switch (e.PropertyName)
             {
                 case nameof(ProvisioningCode):
@@ -51,6 +44,7 @@
                         break;
                     }
             }
+            */
         }
 
         private async Task DoExecute_Start_1_Command_Async()
