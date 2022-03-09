@@ -52,26 +52,22 @@
 
         private async Task GetLanConfigSecurityGetAnonymousLoginAsync()
         {
-            LanConfigSecurityGetAnonymousLoginResponse = await FritzServiceOperationHandler.LanConfigSecurityGetAnonymousLoginAsync();
-            int dummy3 = 1;
+            LanConfigSecurityGetAnonymousLoginResponse = await FritzServiceOperationHandler.LanConfigSecurityGetAnonymousLoginAsync();          
         }
 
         private async Task GetLanConfigSecurityGetCurrentUserAsync()
         {
             LanConfigSecurityGetCurrentUserResponse = await FritzServiceOperationHandler.LanConfigSecurityGetCurrentUserAsync();
-            int dummy4 = 1;
         }
 
         private async Task GetLanConfigSecurityGetInfoAsync()
         {
             LanConfigSecurityGetInfoResponse = await FritzServiceOperationHandler.LanConfigSecurityGetInfoAsync();
-            int dummy5 = 1;
         }
 
         private async Task GetLanConfigSecurityGetUserListAsync()
         {
             LanConfigSecurityGetUserListResponse = await FritzServiceOperationHandler.LanConfigSecurityGetUserListAsync();
-            int dummy6 = 1;
         }
     }
 }

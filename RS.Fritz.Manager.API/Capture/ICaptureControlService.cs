@@ -5,8 +5,8 @@
 
     public interface ICaptureControlService
     {
-        Task<string> GetStartCaptureResponseAsync(Uri uri);
+        Task<bool> GetStartCaptureResponseAsync(Uri uri);
 
-        Task<string> GetStopCaptureResponseAsync(Uri uri);
+        Task<bool> GetStopCaptureResponseAsync(Uri uri);
     }
 }
