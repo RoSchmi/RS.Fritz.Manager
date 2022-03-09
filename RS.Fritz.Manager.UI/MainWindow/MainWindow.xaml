@@ -93,6 +93,9 @@
                 <RibbonGroup ToolTip="The WANIpConnection service enables a UPnP control point to configure and control IP connections on the WAN interface of a UPnP compliant IGD.">
                     <RibbonButton Label="WanIpConnection" Command="{Binding WanIpConnectionViewModel.DefaultCommand}" LargeImageSource="/RS.Fritz.Manager.UI;component/Images/Search.png"/>
                 </RibbonGroup>
+                <RibbonGroup ToolTip="The Capture funcion enables packet sniffing with wireshark">
+                    <RibbonButton Label="Sniffer" Command="{Binding CaptureControlCaptureViewModel.DefaultCommand}" LargeImageSource="/RS.Fritz.Manager.UI;component/Images/Search.png"/>
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <ScrollViewer Grid.Row="1" Background="{StaticResource WindowBackgroundSolidColorBrush}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">

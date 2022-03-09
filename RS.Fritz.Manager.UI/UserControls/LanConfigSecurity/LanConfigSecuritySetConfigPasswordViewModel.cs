@@ -26,7 +26,9 @@
 
         protected override async Task DoExecuteDefaultCommandAsync()
         {
-            _ = await FritzServiceOperationHandler.LanConfigSecuritySetConfigPasswordAsync(Password!);
+            await Task.Delay(500);
+            //RoSchmi
+            //_ = await FritzServiceOperationHandler.LanConfigSecuritySetConfigPasswordAsync(Password!);
         }
 
         protected override void FritzServiceViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

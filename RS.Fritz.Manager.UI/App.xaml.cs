@@ -37,6 +37,7 @@
                     services.AddSingleton<WanIpConnectionViewModel>();
                     services.AddSingleton<DeviceLoginInfo>();
                     services.AddSingleton<ILogger, UserInterfaceLogService>();
+                    services.AddSingleton<CaptureControlCaptureViewModel>();
                     services.AddFritzApi();
                 }).Build();
         }
@@ -45,7 +46,12 @@
         {
             await host.StartAsync();
 
-            var mainWindow = host.Services.GetRequiredService<MainWindow>();
+            
+
+            
+             var mainWindow = host.Services.GetRequiredService<MainWindow>();
+            
+           
 
             mainWindow.Show();
 

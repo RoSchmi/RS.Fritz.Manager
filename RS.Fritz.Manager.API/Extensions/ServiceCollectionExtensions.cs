@@ -12,6 +12,7 @@
         {
             services.AddSingleton<IDeviceSearchService, DeviceSearchService>();
             services.AddSingleton<IDeviceHostsService, DeviceHostsService>();
+            services.AddSingleton<ICaptureControlService, CaptureControlService>();
             services.AddSingleton<IFritzServiceOperationHandler, FritzServiceOperationHandler>();
             services.AddSingleton<IClientFactory<IFritzLanConfigSecurityService>, ClientFactory<IFritzLanConfigSecurityService>>();
             services.AddSingleton<IClientFactory<IFritzDeviceInfoService>, ClientFactory<IFritzDeviceInfoService>>();
@@ -21,6 +22,7 @@
             services.AddSingleton<IClientFactory<IFritzLayer3ForwardingService>, ClientFactory<IFritzLayer3ForwardingService>>();
             services.AddSingleton<IClientFactory<IFritzWanPppConnectionService>, ClientFactory<IFritzWanPppConnectionService>>();
             services.AddSingleton<IClientFactory<IFritzWanIpConnectionService>, ClientFactory<IFritzWanIpConnectionService>>();
+            services.AddSingleton<IClientFactory<ICaptureControlService>, ClientFactory<ICaptureControlService>>();
             ConfigureHttpClients(services);
         }
 

@@ -20,7 +20,7 @@
         private string? userMessage;
         private bool deviceAndLoginControlsEnabled = true;
 
-        public MainWindowViewModel(DeviceLoginInfo deviceLoginInfo, ILogger logger, WanIpConnectionViewModel wanIpConnectionViewModel, HostsViewModel hostsViewModel, WanCommonInterfaceConfigViewModel wanCommonInterfaceConfigViewModel, WanPppConnectionViewModel wanPppConnectionViewModel, Layer3ForwardingViewModel layer3ForwardingViewModel, DeviceInfoViewModel deviceInfoViewModel, LanConfigSecurityViewModel lanConfigSecurityViewModel, WanDslInterfaceConfigViewModel wanDslInterfaceConfigViewModel, IFritzServiceOperationHandler fritzServiceOperationHandler, IDeviceSearchService deviceSearchService)
+        public MainWindowViewModel(DeviceLoginInfo deviceLoginInfo, ILogger logger, CaptureControlCaptureViewModel captureControlCaptureViewModel, WanIpConnectionViewModel wanIpConnectionViewModel, HostsViewModel hostsViewModel, WanCommonInterfaceConfigViewModel wanCommonInterfaceConfigViewModel, WanPppConnectionViewModel wanPppConnectionViewModel, Layer3ForwardingViewModel layer3ForwardingViewModel, DeviceInfoViewModel deviceInfoViewModel, LanConfigSecurityViewModel lanConfigSecurityViewModel, WanDslInterfaceConfigViewModel wanDslInterfaceConfigViewModel, IFritzServiceOperationHandler fritzServiceOperationHandler, IDeviceSearchService deviceSearchService)
         : base(deviceLoginInfo, logger, fritzServiceOperationHandler)
         {
             this.deviceSearchService = deviceSearchService;
@@ -32,6 +32,7 @@
             WanIpConnectionViewModel = wanIpConnectionViewModel;
             WanCommonInterfaceConfigViewModel = wanCommonInterfaceConfigViewModel;
             HostsViewModel = hostsViewModel;
+            CaptureControlCaptureViewModel = captureControlCaptureViewModel;
 
             WeakReferenceMessenger.Default.Register<UserMessageValueChangedMessage>(this, (r, m) =>
             {
@@ -62,7 +63,11 @@
 
         public HostsViewModel HostsViewModel { get; }
 
-        public string? UserMessage
+        public CaptureControlCaptureViewModel? CaptureControlCaptureViewModel { get; }
+
+
+
+    public string? UserMessage
         {
             get => userMessage; set { _ = SetProperty(ref userMessage, value); }
         }
