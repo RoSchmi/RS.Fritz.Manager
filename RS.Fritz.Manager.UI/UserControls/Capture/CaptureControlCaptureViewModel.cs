@@ -50,11 +50,16 @@
         private async Task DoExecute_Start_1_Command_Async()
         {
             string sid = await GetSidAsync();
-            string iface = "2-1";
-            string capturePath = $"/cgi-bin/capture_notimeout?";
-            Uri captureUri = new Uri(FormattableString.Invariant($"http://fritz.box{capturePath}sid={sid}&capture=Start&snaplen=1600&ifaceorminor={iface}"));
+            const string iface = "2-1";
+            const string capturePath = $"/cgi-bin/capture_notimeout";
+            const string Scheme = "http";
+            const string Host = "fritz.box";
+            string query = FormattableString.Invariant($"sid={sid}&capture=Start&snaplen=1600&ifaceorminor={iface}");
+            Uri captureUri = new Uri(FormattableString.Invariant($"{Scheme}://{Host}{capturePath}?{query}"));
 
-            var theResult = await captureControlService.GetStartCaptureResponseAsync(captureUri);
+            //var theResult = await captureControlService.GetStartCaptureResponseAsync(captureUri);
+            //var theResult = await captureControlService.GetStartCaptureResponseStreamAsync(captureUri);
+            var theResult = await captureControlService.GetStartCaptureResponseSocketAsync(Scheme, Host, capturePath, query);
         }
 
         private async Task DoExecute_Stop_1_Command_Async()
