@@ -163,7 +163,7 @@
 
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string filePrefix = "FritzboxCapture";
-            var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy' 'HH' Uhr 'mm'-'ss")}.eth"));
+            var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy' 'HH'_'mm'.'ss")}.eth"));
             var fileStream = file.Create();
 
             byte[] buffer = new byte[4096];

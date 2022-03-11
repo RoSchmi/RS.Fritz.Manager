@@ -3,14 +3,27 @@
     using System;
     using System.ComponentModel;
     using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Threading;
     using CommunityToolkit.Mvvm.Input;
+    using Microsoft.Extensions.Logging;
+    using RS.Fritz.Manager.API;
+
+
+    using System;
+    using System.Threading.Tasks;
+    using System.Windows.Threading;
+    using CommunityToolkit.Mvvm.Messaging.Messages;
     using Microsoft.Extensions.Logging;
     using RS.Fritz.Manager.API;
 
     internal sealed class CaptureControlCaptureViewModel : FritzServiceViewModel
     {
         private readonly ICaptureControlService captureControlService;
+        private int progBar_1_percent = 0;
+        private Visibility progBar_1_Visibility = Visibility.Hidden;
         private string provisioningCode = string.Empty;
+        private readonly DispatcherTimer animationTimer;
 
         public CaptureControlCaptureViewModel(DeviceLoginInfo deviceLoginInfo, ILogger logger, IFritzServiceOperationHandler fritzServiceOperationHandler, ICaptureControlService captureControlService)
            : base(deviceLoginInfo, logger, fritzServiceOperationHandler)
@@ -18,15 +31,40 @@
             this.captureControlService = captureControlService;
             Start_1_Command = new AsyncRelayCommand(DoExecute_Start_1_Command_Async);
             Stop_1_Command = new AsyncRelayCommand(DoExecute_Stop_1_Command_Async);
+            animationTimer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromMilliseconds(300)
+            };
+            animationTimer.Tick += AnimationTimer_Tick;
+            
+        }
+
+        private void AnimationTimer_Tick(object? sender, EventArgs e)
+        {
+            ProgBar_1_percent = (progBar_1_percent + 1) % 10;
         }
 
         public IAsyncRelayCommand Start_1_Command { get; }
 
         public IAsyncRelayCommand Stop_1_Command { get; }
 
-        
 
-        protected override async Task DoExecuteDefaultCommandAsync()
+        public int ProgBar_1_percent
+        {
+            get => progBar_1_percent;
+            set => _ = SetProperty(ref progBar_1_percent, value);
+        }
+
+        public Visibility ProgBar_1_Visibility
+        {
+            get => progBar_1_Visibility;
+            set => _ = SetProperty(ref progBar_1_Visibility, value);
+        }
+
+    //get => hostsGetGenericHostEntryResponse; set { _ = SetProperty(ref hostsGetGenericHostEntryResponse, value);
+
+
+    protected override async Task DoExecuteDefaultCommandAsync()
         {
             // do nothing
             await Task.Delay(100);
@@ -57,9 +95,17 @@
             string query = FormattableString.Invariant($"sid={sid}&capture=Start&snaplen=1600&ifaceorminor={iface}");
             Uri captureUri = new Uri(FormattableString.Invariant($"{Scheme}://{Host}{capturePath}?{query}"));
 
+            ProgBar_1_Visibility = Visibility.Visible;
+            animationTimer.Start();
+
             //var theResult = await captureControlService.GetStartCaptureResponseAsync(captureUri);
-            //var theResult = await captureControlService.GetStartCaptureResponseStreamAsync(captureUri);
-            var theResult = await captureControlService.GetStartCaptureResponseSocketAsync(Scheme, Host, capturePath, query);
+            var theResult = await captureControlService.GetStartCaptureResponseStreamAsync(captureUri);
+            //var theResult = await captureControlService.GetStartCaptureResponseSocketAsync(Scheme, Host, capturePath, query);
+
+            progBar_1_percent = 0;
+            animationTimer.Stop();
+            ProgBar_1_Visibility = Visibility.Hidden;
+
         }
 
         private async Task DoExecute_Stop_1_Command_Async()
