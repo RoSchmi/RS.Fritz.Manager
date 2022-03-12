@@ -22,6 +22,7 @@
         private readonly ICaptureControlService captureControlService;
         private int progBar_1_percent = 0;
         private Visibility progBar_1_Visibility = Visibility.Hidden;
+        private int captureFileSize;
         private string provisioningCode = string.Empty;
         private readonly DispatcherTimer animationTimer;
 
@@ -36,6 +37,7 @@
                 Interval = TimeSpan.FromMilliseconds(300)
             };
             animationTimer.Tick += AnimationTimer_Tick;
+            CaptureFileSize = 5;
             
         }
 
@@ -60,6 +62,13 @@
             get => progBar_1_Visibility;
             set => _ = SetProperty(ref progBar_1_Visibility, value);
         }
+
+        public int CaptureFileSize
+        {
+            get => captureFileSize;
+            set => _ = SetProperty(ref captureFileSize, value);
+        }
+
 
     //get => hostsGetGenericHostEntryResponse; set { _ = SetProperty(ref hostsGetGenericHostEntryResponse, value);
 
