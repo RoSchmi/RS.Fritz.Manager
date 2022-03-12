@@ -52,19 +52,16 @@
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             var cancToken = cancellationTokenSource.Token;
 
-            var responsefile = new FileInfo(FormattableString.Invariant($"{folderPath}\\{responseFilePrefix}_{DateTime.Now.ToString("dd/MM/yyyy'_'HH'_'mm'.'ss")}.eth"));
+            var responsefile = new FileInfo(FormattableString.Invariant($"{folderPath}\\{responseFilePrefix}_{DateTime.Now.ToString("dd/MM/yyyy'_'HH'_'mm'.'ss")}.txt"));
             var responseFileStream = responsefile.Create();
 
             var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy'_'HH'_'mm'.'ss")}.eth"));
             var fileStream = file.Create();
 
-
             Socket clientSocket = new Socket(localIpAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            
 
             await clientSocket.ConnectAsync(fritzEndPoint);
             await clientSocket.SendAsync(Encoding.UTF8.GetBytes(request), SocketFlags.None);
-            
 
             const int buffersize = 4096;
             byte[] receiveBuffer = new byte[buffersize];
@@ -72,20 +69,21 @@
             int rounds = 0;
             int actIndex = 0;
 
+            // 400 represents the limit for the file size 400 x 4096 = about 1.6 MBytes
             while (rounds < 400 && !isFinished)
             {
-                await Task.Delay(10);
+                await Task.Delay(2);
                 int bytesRead = await clientSocket.ReceiveAsync(receiveBuffer, SocketFlags.None, cancToken);
                 isFinished = bytesRead < buffersize;
                 if (rounds == 0)
                 {
-                    // Find end of request headers
+                    // Find end of request headers to differently handle response and payload
                     while ((receiveBuffer[actIndex + 1] != 10) || (receiveBuffer[actIndex + 2] != 13) || receiveBuffer[actIndex + 3] != 10)
                     {
                         actIndex = Array.IndexOf(receiveBuffer, (byte)13, actIndex + 1);
                     }
 
-                    string beginString = Encoding.UTF8.GetString(receiveBuffer, 0, actIndex + 3);
+                    //string beginString = Encoding.UTF8.GetString(receiveBuffer, 0, actIndex + 3);
 
                     await responseFileStream.WriteAsync(receiveBuffer, 0, actIndex + 3);
                     await fileStream.WriteAsync(receiveBuffer, actIndex + 4, bytesRead - (actIndex + 4), cancToken);
@@ -100,58 +98,6 @@
             }
 
             fileStream.Close();
-            int dummy35 = 1;
-
-            /*
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            var cancToken = cancellationTokenSource.Token;
-            HttpClient httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string filePrefix = "FritzboxCapture";
-            var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy' 'HH' Uhr 'mm'-'ss")}.eth"));
-            var fileStream = file.Create();
-
-
-            byte[] buffer = new byte[4096];
-            int loops = 0;
-            int allBytesRead = 0;
-            int bytesRead = -1;
-
-            var responseStream = httpClient.GetStreamAsync(uri, cancToken);
-            while (!cancToken.IsCancellationRequested)
-            {
-                try
-                {
-                    bytesRead = await responseStream.ReadAsync(buffer, cancToken);
-                }
-                catch (Exception ex)
-                {
-                    string message1 = ex.Message;
-                }
-
-                try
-                {
-                    await fileStream.WriteAsync(buffer, 0, bytesRead, cancToken);
-                }
-                catch (Exception ex)
-                {
-                    string message2 = ex.Message;
-                }
-
-                allBytesRead += bytesRead;
-                loops++;
-                if (loops == 3)
-                {
-                    cancellationTokenSource.Cancel();
-                    await Task.Delay(1);
-                }
-            }
-
-            
-
-            */
-
             return true;
         }
 

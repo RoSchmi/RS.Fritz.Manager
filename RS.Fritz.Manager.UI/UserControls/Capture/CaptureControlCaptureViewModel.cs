@@ -99,8 +99,8 @@
             animationTimer.Start();
 
             //var theResult = await captureControlService.GetStartCaptureResponseAsync(captureUri);
-            var theResult = await captureControlService.GetStartCaptureResponseStreamAsync(captureUri);
-            //var theResult = await captureControlService.GetStartCaptureResponseSocketAsync(Scheme, Host, capturePath, query);
+            //var theResult = await captureControlService.GetStartCaptureResponseStreamAsync(captureUri);
+            var theResult = await captureControlService.GetStartCaptureResponseSocketAsync(Scheme, Host, capturePath, query);
 
             progBar_1_percent = 0;
             animationTimer.Stop();
