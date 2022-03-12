@@ -70,7 +70,7 @@
             int actIndex = 0;
 
             // 400 represents the limit for the file size 400 x 4096 = about 1.6 MBytes
-            while (rounds < 400 && !isFinished)
+            while (rounds < 4000 && !isFinished)
             {
                 await Task.Delay(2);
                 int bytesRead = await clientSocket.ReceiveAsync(receiveBuffer, SocketFlags.None, cancToken);
