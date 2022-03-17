@@ -131,9 +131,6 @@
             string timeString20 = DateTime.UtcNow.Ticks.ToString("D20");
             string timeId = FormattableString.Invariant($"t{timeString20.Substring(timeString20.Length - 13)}");
             Uri captureUri = new Uri(FormattableString.Invariant($"{Scheme}://{Host}{CapturePath}?iface={iface}&minor=1&type=2&capture=Stop&sid={sid}&useajax=1&xhr=1&{timeId}=nocache"));
-
-            //Uri captureUri = new Uri(FormattableString.Invariant($"{Scheme}://{Host}{CapturePath}?iface={iface}&minor=1&type=2&capture=Stop&sid={sid}&useajax=1&xhr=1&t1646748233367=nocache"));
-
             await captureControlService.GetStopCaptureResponseAsync(captureUri);
         }
 
