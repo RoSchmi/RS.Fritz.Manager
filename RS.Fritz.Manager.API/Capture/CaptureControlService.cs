@@ -21,7 +21,7 @@
             this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<bool> GetStartCaptureResponseSocketAsync(string scheme, string host, string capturePath, string query)
+        public async Task<bool> GetStartCaptureResponseSocketAsync(string scheme, string host, string capturePath, string query, int captureFileSizeMB)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress localIpAddress;
@@ -64,13 +64,14 @@
             await clientSocket.SendAsync(Encoding.UTF8.GetBytes(request), SocketFlags.None);
 
             const int buffersize = 4096;
+            int captureFileSizeLimiter = (captureFileSizeMB * 1000000) / buffersize;
             byte[] receiveBuffer = new byte[buffersize];
             bool isFinished = false;
             int rounds = 0;
             int actIndex = 0;
 
             // 400 represents the limit for the file size 400 x 4096 = about 1.6 MBytes
-            while (rounds < 4000 && !isFinished)
+            while (rounds < captureFileSizeLimiter && !isFinished)
             {
                 await Task.Delay(2);
                 int bytesRead = await clientSocket.ReceiveAsync(receiveBuffer, SocketFlags.None, cancToken);
@@ -101,14 +102,14 @@
             return true;
         }
 
-        public async Task<bool> GetStartCaptureResponseStreamAsync(Uri uri)
+        public async Task<bool> GetStartCaptureResponseStreamAsync(Uri uri, string folderPath, string filePrefix)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             var cancToken = cancellationTokenSource.Token;
             HttpClient httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
 
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string filePrefix = "FritzboxCapture";
+            //string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            //string filePrefix = "FritzboxCapture";
             var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy' 'HH'_'mm'.'ss")}.eth"));
             var fileStream = file.Create();
 
@@ -171,35 +172,27 @@
             return true;
         }
 
-        public async Task<bool> GetStartCaptureResponseAsync(Uri uri)
+        public async Task GetStartCaptureResponseAsync(Uri uri, string folderPath, string filePrefix)
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            var cancToken = cancellationTokenSource.Token;
             HttpClient httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string filePrefix = "FritzboxCapture";
-
             var file = new FileInfo(FormattableString.Invariant($"{folderPath}\\{filePrefix}_{DateTime.Now.ToString("dd/MM/yyyy'_'HH'_'mm'.'ss")}.eth"));
 
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-            using (var downloadStream = await response.Content.ReadAsStreamAsync(cancToken))
+            using (var downloadStream = await response.Content.ReadAsStreamAsync())
             {
                 using (var fileStream = file.Create())
                 {
                     await downloadStream.CopyToAsync(fileStream);
                 }
             }
-
-            return true;
         }
 
-        public async Task<bool> GetStopCaptureResponseAsync(Uri uri)
+        public async Task GetStopCaptureResponseAsync(Uri uri)
         {
             HttpClient httpClient = httpClientFactory.CreateClient(Constants.HttpClientName);
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
-            return true;
         }
     }
 }
